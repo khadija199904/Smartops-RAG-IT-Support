@@ -6,10 +6,10 @@ import os
 load_dotenv()
 
 
-PDF_PATH = os.getenv("PDF_PATH")
+PDF_PATH = os.getenv("DATA_PATH")
+
 MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME")
 VECTOR_DB_DIR = os.getenv("VECTOR_DB_DIR")
-
 
 
 DATABASE_URL = os.getenv("DATABASE_URL")
