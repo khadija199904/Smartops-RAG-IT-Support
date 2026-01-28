@@ -2,6 +2,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from api.core.config import MODEL_NAME ,VECTOR_DB_DIR ,PDF_PATH
 from pipelineRAG.load_split import ingestion_preparation
+import os
 
 
 def get_embedding_model():
@@ -21,11 +22,23 @@ def create_and_store_embeddings(chunks):
             persist_directory=VECTOR_DB_DIR
         )
         
-    
+    print(" Base de données vectorielle créée et persistée avec succès.")
 
    
 
     return vector_db
+
+
+
+def load_vector_db():
+    """Charge la base de données vectorielle existante."""
+    if os.path.exists(VECTOR_DB_DIR):
+        embeddings = get_embedding_model()
+        return Chroma(persist_directory=VECTOR_DB_DIR, embedding_function=embeddings)
+    else:
+        print("La base de données n'existe pas encore.")
+        return None
+    
 if __name__ == "__main__":
     # print(MODEL_NAME)
     # model = get_embedding_model ()
