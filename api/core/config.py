@@ -8,8 +8,11 @@ load_dotenv()
 
 PDF_PATH = os.getenv("DATA_PATH")
 
-MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME")
+EMBEDDING_MODEL_NAME= os.getenv("EMBEDDING_MODEL_NAME")
 VECTOR_DB_DIR = os.getenv("VECTOR_DB_DIR")
+
+# 2 eme methode 
+HF_TOKEN = os.getenv("HF_TOKEN")
 
 
 DATABASE_URL = os.getenv("DATABASE_URL")
