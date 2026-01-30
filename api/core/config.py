@@ -10,6 +10,7 @@ PDF_PATH = os.getenv("DATA_PATH")
 
 EMBEDDING_MODEL_NAME= os.getenv("EMBEDDING_MODEL_NAME")
 VECTOR_DB_DIR = os.getenv("VECTOR_DB_DIR")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 # 2 eme methode 
 HF_TOKEN = os.getenv("HF_TOKEN")
