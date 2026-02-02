@@ -1,7 +1,7 @@
-from langchain_huggingface import HuggingFaceEmbeddings , HuggingFaceEndpointEmbeddings
-from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings 
+from langchain_chroma import Chroma
 
-from langchain_community.vectorstores import Chroma
+# from langchain_community.vectorstores import Chroma
 from api.core.config import  EMBEDDING_MODEL_NAME ,VECTOR_DB_DIR ,PDF_PATH ,HF_TOKEN
 
 import os
@@ -11,7 +11,7 @@ import shutil
 def get_embedding_model():
     if not HF_TOKEN:
         raise ValueError("HF_TOKEN est manquant dans les variables d'environnement.")
-    print(f"Chargement du modèle d'embeddings : {EMBEDDING_MODEL_NAME,}...")
+    print(f"Chargement du modèle d'embeddings : {EMBEDDING_MODEL_NAME}...")
     model_kwargs = {'device': 'cpu'}
     encode_kwargs = {'normalize_embeddings': True}
     return HuggingFaceEmbeddings(
