@@ -9,7 +9,7 @@ from langchain_classic.chains.retrieval_qa.base import RetrievalQA
 def get_retriever():
     vecteur_db = load_vector_db()
     if  vecteur_db:
-        retriever = vecteur_db.as_retriever(search_kwargs={"k": 3})
+        retriever = vecteur_db.as_retriever(search_kwargs={"k": 2})
 
         return retriever
     else:  
