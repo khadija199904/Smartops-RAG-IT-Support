@@ -1,3 +1,5 @@
+# RAG 
+
 langchain
 langchain-community 
 langchain-core
@@ -9,3 +11,13 @@ langchain-chroma
 chromadb
 sentence-transformers
 langchain-groq
+
+# Fastapi
+
+sqlalchemy 
+fastapi 
+uvicorn 
+python-jose
+requests
+argon2_cffi
+
