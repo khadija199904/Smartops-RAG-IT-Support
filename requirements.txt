@@ -1,9 +1,11 @@
-langchain 
-langchain-community
+langchain
+langchain-community 
+langchain-core
+langchain-classic 
 pypdf
 langchain-text-splitters
 langchain-huggingface 
-sentence_transformers
+langchain-chroma
 chromadb
-langchain-google-genai
+sentence-transformers
 langchain-groq
