@@ -6,7 +6,7 @@ from api.crud.crud_user import create_user
 from api.core.security import verify_password_hash ,create_token
 from api.dependencies import get_db
 
-router = APIRouter( prefix="/auth", tags=["Authentication"])
+router = APIRouter( prefix="/auth", tags=["Authentification"])
 
 @router.post('/register')
 async def Register(user : UserCreate ,db: Session = Depends(get_db)) :
