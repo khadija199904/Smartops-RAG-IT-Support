@@ -19,5 +19,6 @@ fastapi
 uvicorn 
 python-jose
 requests
-argon2_cffi
+passlib
+
 
