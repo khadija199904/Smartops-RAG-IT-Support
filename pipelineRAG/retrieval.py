@@ -6,16 +6,9 @@ from langchain_groq import ChatGroq
 from langchain_classic.chains.retrieval_qa.base import RetrievalQA
 
 
-def get_retriever():
-    vecteur_db = load_vector_db()
-    if  vecteur_db:
-        retriever = vecteur_db.as_retriever(search_kwargs={"k": 2})
-
-        return retriever
-    else:  
-        raise ValueError("Erreur : La base vectorielle est vide ou inexistante.")
-    
-    
+MODEL_NAME = "qwen-2.5-32b"
+TEMPERATURE = 0
+TOP_K = 2
 system_prompt = (
     "Tu es un assistant technique expert en IT. "
     "Utilise exclusivement le contexte fourni pour répondre à la question. "
@@ -26,23 +19,26 @@ system_prompt = (
 )
   
 
-prompt = ChatPromptTemplate.from_messages([
-    ("system", system_prompt),
-     ("human", "{question}"),
-])
+
+
+def get_retriever():
+    vecteur_db = load_vector_db()
+    if  vecteur_db:
+        retriever = vecteur_db.as_retriever(search_kwargs={"k": TOP_K})
+
+        return retriever
+    else:  
+        raise ValueError("Erreur : La base vectorielle est vide ou inexistante.")
+    
+    
+
+
+
 
 
 def get_llm():
-
-    llm = ChatGroq(
-          model="qwen/qwen3-32b",
-          temperature=0,
-          max_tokens=None,
-          reasoning_format="parsed",
-          timeout=None,
-            max_retries=2)
     
-    
+    llm = ChatGroq(model=MODEL_NAME, temperature=TEMPERATURE)
     return llm
 
 def build_rag_chain():
@@ -50,10 +46,15 @@ def build_rag_chain():
 
     llm = get_llm()
     
+    prompt = ChatPromptTemplate.from_messages([
+    ("system", system_prompt),
+     ("human", "{question}"),
+       ])
     qa_chain = RetrievalQA.from_chain_type(
     llm=llm,
     chain_type="stuff",
     retriever=retriever,
+    return_source_documents=True,
     chain_type_kwargs={"prompt": prompt }   
          )
     return qa_chain
