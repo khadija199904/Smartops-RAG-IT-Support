@@ -4,7 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from pipelineRAG.vectorstore import get_embedding_model
-from  api.models.queries import Query
 
 MODEL_PATH = "ml/models_saved/kmeans_it_support.joblib"
 
