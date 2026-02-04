@@ -4,13 +4,14 @@ from datetime import datetime
 
 class QueryBase(BaseModel):
     question :str
-    latency_ms: int
+    
 
 
-class QueryCreate(QueryBase):
+class QueryRequest(QueryBase):
      pass
 
-class Query(QueryBase):
+class QueryResponce(QueryBase):
      id : int
+     latency_ms: int
      created_at:datetime
      user_id:int
