@@ -1,5 +1,10 @@
 import pytest
 from unittest.mock import Mock, patch, MagicMock
+
+
+
+
+
 def test_rag_chain_invoke():
     """Test invocation chaîne RAG"""
 
