@@ -28,3 +28,6 @@ passlib[argon2]
 
 scikit-learn
 mlflow
+
+pytest
+pytest-mock
