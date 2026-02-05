@@ -1,8 +1,8 @@
 from langchain_huggingface import HuggingFaceEmbeddings 
 from langchain_chroma import Chroma
-
+import chromadb
 # from langchain_community.vectorstores import Chroma
-from api.core.config import  EMBEDDING_MODEL_NAME ,VECTOR_DB_DIR ,PDF_PATH ,HF_TOKEN
+from api.core.config import  EMBEDDING_MODEL_NAME ,PDF_PATH ,HF_TOKEN,CHROMA_HOST ,CHROMA_PORT ,COLLECTION_NAME
 
 import os
 import shutil
@@ -24,19 +24,26 @@ def get_embedding_model():
 def create_and_store_embeddings(chunks):
     """Génère les vecteurs et les stocke dans ChromaDB avec persistance."""
       
-    # suprimr ancienne chroma db
-    if os.path.exists(VECTOR_DB_DIR):
-       shutil.rmtree(VECTOR_DB_DIR)
-       print("Ancienne base vectorielle supprimée.")
+    
     try:
        # vectorization
        embeddings = get_embedding_model()
-       print(f"Stockage dans ChromaDB à l'emplacement : {VECTOR_DB_DIR}...")
-       # Création et persistance automatique dans le dossier spécifié
+       print(f"Connexion au serveur ChromaDB sur {CHROMA_HOST}:{CHROMA_PORT}...")
+        
+       
+       persistent_client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+
+       try:
+            persistent_client.delete_collection(name=COLLECTION_NAME)
+            print(f"Ancienne collection '{COLLECTION_NAME}' supprimée.")
+       except:
+            pass
+       
        vector_db = Chroma.from_documents(
             documents=chunks,
             embedding=embeddings,
-            persist_directory=VECTOR_DB_DIR
+            client=persistent_client, 
+            collection_name=COLLECTION_NAME
         )
        
        print(" Base de données vectorielle créée et persistée avec succès.")
@@ -53,13 +60,15 @@ def create_and_store_embeddings(chunks):
 
 def load_vector_db():
     """Charge la base de données vectorielle existante."""
-    if os.path.exists(VECTOR_DB_DIR):
-        embeddings = get_embedding_model()
-        return Chroma(persist_directory=VECTOR_DB_DIR, embedding_function=embeddings)
-    else:
-        print("La base de données n'existe pas encore.")
-        return None
     
+    embeddings = get_embedding_model()
+    persistent_client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+    
+    return Chroma(
+        client=persistent_client,
+        collection_name=COLLECTION_NAME,
+        embedding_function=embeddings
+    )
 
 
 
@@ -83,5 +92,5 @@ if __name__ == "__main__":
     # print(f"Premier élément : {vecteur[0]}")
     from pipelineRAG.ingestion import ingestion_preparation
     #test fonctionnement complet
-    chunks = ingestion_preparation(file_path=PDF_PATH)
+    chunks = ingestion_preparation()
     vecteur = create_and_store_embeddings(chunks)
