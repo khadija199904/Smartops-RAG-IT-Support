@@ -21,4 +21,4 @@ def test_rag_chain_invoke():
     assert result == mock_result
     assert "result" in result
     assert "source_documents" in result
-    mock_chain.assert_called_once_with({"query":query})
+    mock_chain.invoke.assert_called_once_with({"query": query})
