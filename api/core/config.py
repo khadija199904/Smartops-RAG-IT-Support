@@ -16,6 +16,11 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 HF_TOKEN = os.getenv("HF_TOKEN")
 
 
+# CHROMA CONFIGURATION
+CHROMA_HOST = os.getenv("CHROMA_HOST", "localhost")
+CHROMA_PORT = os.getenv("CHROMA_PORT", "8001")
+COLLECTION_NAME = os.getenv("CHROMA_COLLECTION_NAME", "smartops_collection")
+
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
