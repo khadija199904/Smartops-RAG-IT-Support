@@ -28,7 +28,7 @@ def test_with_chain(mock_rag_chain):
 
 def test_with_question(mock_rag_chain, mock_question):
     """Test avec fixture question"""
-    with patch('pipelineRAG.query_service.build_rag_chain', return_value=mock_rag_chain):
+    with patch('api.services.rag_service.build_rag_chain', return_value=mock_rag_chain):
         
         result = query_rag_service(mock_question)
         
