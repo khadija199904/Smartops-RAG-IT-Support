@@ -8,7 +8,7 @@ file_path = PDF_PATH
 def ingestion_preparation():
   if not os.path.exists(file_path):
     raise FileNotFoundError(f"Erreur : Le fichier n'existe pas à l'emplacement : {file_path}")
-  print(f"--- Début de l'ingestion ---")
+  print("--- Début de l'ingestion ---")
   try : 
        # charger le PDF
       loader = PyPDFLoader(file_path)

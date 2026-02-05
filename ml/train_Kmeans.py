@@ -37,7 +37,7 @@ def train_kmeans():
     # 4. Sauvegarde du modèle
     os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
     joblib.dump(kmeans, MODEL_PATH)
-    print(f"Modèle entraîné et sauvegardé .")
+    print("Modèle entraîné et sauvegardé .")
     return kmeans
 
     

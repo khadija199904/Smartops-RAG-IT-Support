@@ -10,7 +10,7 @@ def process_query_clustering(db: Session):
     Fonction pour classer les questions en attente et enregistrer leur cluster en DB.
     """
     # 1. Extraction : Récupérer les questions qui n'ont pas encore de cluster
-    queries_to_process = db.query(Query).filter(Query.cluster == None).all()
+    queries_to_process = db.query(Query).filter(Query.cluster.is_(None)).all()
     
     if not queries_to_process:
         return 0

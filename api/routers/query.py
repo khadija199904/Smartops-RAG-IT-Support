@@ -9,6 +9,6 @@ router = APIRouter()
 async def ask_query(request : QueryRequest):
   question = request.question
   reponse = query_rag_service(question)
-  # cluster_id = clustering_query(question)
-  # print (cluster_id)
+  cluster_id = clustering_query(question)
+  print (cluster_id)
   return reponse 

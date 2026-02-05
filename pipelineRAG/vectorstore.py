@@ -2,10 +2,8 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 import chromadb
 # from langchain_community.vectorstores import Chroma
-from api.core.config import  EMBEDDING_MODEL_NAME ,PDF_PATH ,HF_TOKEN,CHROMA_HOST ,CHROMA_PORT ,COLLECTION_NAME
+from api.core.config import  EMBEDDING_MODEL_NAME ,HF_TOKEN,CHROMA_HOST ,CHROMA_PORT ,COLLECTION_NAME
 
-import os
-import shutil
 
 
 def get_embedding_model():
@@ -36,7 +34,7 @@ def create_and_store_embeddings(chunks):
        try:
             persistent_client.delete_collection(name=COLLECTION_NAME)
             print(f"Ancienne collection '{COLLECTION_NAME}' supprimée.")
-       except:
+       except Exception:
             pass
        
        vector_db = Chroma.from_documents(

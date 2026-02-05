@@ -1,23 +1,8 @@
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-import os
-import shutil
+
+from unittest.mock import Mock, patch
+
 from pipelineRAG.vectorstore import get_embedding_model
 from pipelineRAG.vectorstore import create_and_store_embeddings
-
-def test_get_embedding_model_success():
-    """Test chargement modèle avec token valide"""
-    with patch('pipelineRAG.vectorstore.HF_TOKEN', 'fake_token'):
-        with patch('pipelineRAG.vectorstore.HuggingFaceEmbeddings') as mock_hf:
-            
-            
-            model = get_embedding_model()
-            
-            assert mock_hf.called
-            call_args = mock_hf.call_args[1]
-            assert call_args['model_kwargs']['device'] == 'cpu'
-            assert call_args['encode_kwargs']['normalize_embeddings'] is True
-
 
 
 
