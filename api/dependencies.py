@@ -3,7 +3,7 @@ from api.database import SessionLocal
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from api.core.config import SECRET_KEY 
-from api.models.users import USERS
+from api.models.users import USER
 from jose import JWTError, jwt
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
@@ -32,7 +32,7 @@ def get_current_user (db: Session = Depends(get_db), token : str = Depends(oauth
     except JWTError:
       raise HTTPException(status_code=401,detail="Token expiré ou corrompu")
 
-    user_db = db.query(USERS).filter(USERS.id == user_id).first()
+    user_db = db.query(USER).filter(USER.id == user_id).first()
     
     
     if not user_db:

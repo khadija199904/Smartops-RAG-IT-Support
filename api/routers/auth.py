@@ -1,6 +1,6 @@
 from fastapi import APIRouter,Depends,HTTPException
 from sqlalchemy.orm import Session
-from api.schemas.user_schema import UserCreate ,User
+from api.schemas.user_schema import UserCreate ,UserLogin
 from api.models.users import USER
 from api.crud.crud_user import create_user
 from api.core.security import verify_password_hash ,create_token
@@ -11,7 +11,7 @@ router = APIRouter( prefix="/auth", tags=["Authentification"])
 @router.post('/register')
 async def Register(user : UserCreate ,db: Session = Depends(get_db)) :
 
-   if not user.username.strip() or not user.password.strip() :
+   if not user.username.strip() or not user.password.strip() or not user.email.strip() :
     
     raise HTTPException(
         status_code=400,
@@ -35,15 +35,15 @@ async def Register(user : UserCreate ,db: Session = Depends(get_db)) :
 # Endpoint login protégée
 
 @router.post("/login") 
-async def login(user : User,db: Session = Depends(get_db)):
+async def login(user : UserLogin,db: Session = Depends(get_db)):
      
-     if not user.username.strip() or not user.password.strip():
-        raise HTTPException(status_code=400, detail="Username et password requis")
+     if not user.email.strip() or not user.password.strip():
+        raise HTTPException(status_code=400, detail="Email et password requis")
      
      user_data = db.query(USER).filter(USER.email == user.email ).first()
      
      if not user_data or not verify_password_hash(user.password,user_data.password_hash):
-        raise HTTPException(status_code=401,detail="Access Failed (Incorrect username or password)")
+        raise HTTPException(status_code=401,detail="Access Failed (Incorrect Identifiant or password)")
      
      token = create_token(user_data) 
      return {    

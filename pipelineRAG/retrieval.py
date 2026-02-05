@@ -2,11 +2,12 @@
 from pipelineRAG.vectorstore import load_vector_db
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
-# from api.core.config import HF_TOKEN
+from api.core.config import GROQ_API_KEY
 from langchain_classic.chains.retrieval_qa.base import RetrievalQA
 
 
-MODEL_NAME = "qwen-2.5-32b"
+
+MODEL_NAME = "llama-3.1-8b-instant"
 TEMPERATURE = 0
 TOP_K = 2
 system_prompt = (
@@ -38,7 +39,7 @@ def get_retriever():
 
 def get_llm():
     
-    llm = ChatGroq(model=MODEL_NAME, temperature=TEMPERATURE)
+    llm = ChatGroq(model=MODEL_NAME, temperature=TEMPERATURE,api_key=GROQ_API_KEY)
     return llm
 
 def build_rag_chain():

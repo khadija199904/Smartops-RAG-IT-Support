@@ -20,9 +20,11 @@ fastapi
 uvicorn 
 python-jose
 requests
-passlib
+passlib[argon2]
+
 
 # ml
 
 
 scikit-learn
+mlflow

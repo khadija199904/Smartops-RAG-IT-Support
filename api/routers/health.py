@@ -2,8 +2,7 @@ import time
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from database import get_db 
-from langchain_groq import ChatGroq
+from api.dependencies import get_db 
 
 router = APIRouter()
 
