@@ -1,7 +1,5 @@
 
 from unittest.mock import Mock, patch
-
-from pipelineRAG.vectorstore import get_embedding_model
 from pipelineRAG.vectorstore import create_and_store_embeddings
 
 
