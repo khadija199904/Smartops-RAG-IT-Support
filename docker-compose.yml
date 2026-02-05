@@ -18,6 +18,14 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: smartops_chroma
+    restart: always
+    volumes:
+      - chroma_data:/chroma/chroma
+    ports:
+      - "8001:8000"
 
   backend:
     build:
@@ -31,15 +39,19 @@ services:
       - .env
     environment:
        - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-it_assistant_db}
-
+       - CHROMA_HOST=chroma
+       - CHROMA_PORT=8000
     ports:
       - "8000:8000"
     volumes:
       - ./api:/app/api
       - ./data/chroma_db:/app/data/chroma_db
       - ./pipelineRAG:/app/pipelineRAG
+      - ./pipelineRAG:/app/pipelineRAG
+      - ./ml:/app/ml
     working_dir: /app
     command: sh -c "sleep 5 && uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload"
 
 volumes:
   pg_data:
+  chroma_data:
