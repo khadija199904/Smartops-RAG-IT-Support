@@ -28,12 +28,11 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 if not DATABASE_URL :
     # Fetch variables
-     USER = os.getenv("user")
-     PASSWORD = os.getenv("password")
-     HOST = os.getenv("host")
-     PORT = os.getenv("port")
-     DBNAME = os.getenv("dbname")
-
+     USER = os.getenv("POSTGRES_USER","airflow")
+     PASSWORD = os.getenv("POSTGRES_PASSWORD","airflow")
+     HOST = os.getenv("POSTGRES_HOST")
+     PORT = os.getenv("POSTGRES_PORT")
+     DBNAME = os.getenv("POSTGRES_DB")
 
      # Construct the SQLAlchemy connection string
      DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
