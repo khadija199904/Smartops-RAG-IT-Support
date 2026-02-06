@@ -26,7 +26,7 @@ jobs:
           pip install -r requirements.txt
           pip install pytest ruff # ruff est un linter moderne et très rapide
 
-      - name: Bonus - Linting (Vérification du style)
+      - name: Linting (Vérification du style)
         run: ruff check .
 
       - name: Exécution des tests (Pytest)
