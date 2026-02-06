@@ -1,7 +1,12 @@
 
-#  RAG IT Support System
+# RAG IT Support System
 
-un assistant intelligent interne capable de répondre de manière fiable aux questions des techniciens IT à partir d’un PDF de support IT (procédures, incidents, FAQ).
+[![Build Status](https://github.com/votre-username/rag-it-support/workflows/CI/badge.svg)](https://github.com/votre-username/rag-it-support/actions)
+[![Coverage](https://codecov.io/gh/votre-username/rag-it-support/branch/main/graph/badge.svg)](https://codecov.io/gh/votre-username/rag-it-support)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+Système de Retrieval-Augmented Generation (RAG) pour le support informatique, utilisant LangChain, ChromaDB et Groq LLM avec déploiement Kubernetes et CI/CD automatisé.
 
 ##  Table des matières
 
@@ -12,10 +17,12 @@ un assistant intelligent interne capable de répondre de manière fiable aux que
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Utilisation](#utilisation)
-- [Structure du projet](#structure-du-projet)
+- [CI/CD](#cicd)
+- [Déploiement](#déploiement)
+- [Supervision & Monitoring](#supervision--monitoring)
 - [Tests](#tests)
 - [API](#api)
-- [Déploiement](#déploiement)
+- [Performance](#performance)
 - [Dépannage](#dépannage)
 - [Contribution](#contribution)
 - [Licence](#licence)
@@ -23,461 +30,217 @@ un assistant intelligent interne capable de répondre de manière fiable aux que
 ##  Aperçu
 
 Ce projet implémente un système RAG (Retrieval-Augmented Generation) spécialisé dans le support IT. Il permet de:
-- Indexer des documents IT support (PDF, etc.)
-- Répondre aux questions techniques basées sur ces documents
-- Fournir des sources pour chaque réponse
-- Offrir une API REST pour l'intégration
+-  Indexer des documents IT support (PDF, etc.)
+-  Répondre aux questions techniques basées sur ces documents
+-  Fournir des sources pour chaque réponse
+-  Déployer sur Kubernetes avec haute disponibilité
+-  Monitorer les performances et la santé du système
+-  CI/CD automatisé avec GitHub Actions
 
 ##  Fonctionnalités
 
-- **🔍 Ingestion de documents**: Support PDF avec découpage intelligent
-- **🧠 Embeddings**: Utilisation de modèles HuggingFace performants
-- **💾 Base vectorielle**: ChromaDB avec support HTTP pour scalabilité
-- **🤖 LLM**: Intégration Groq pour génération rapide
-- **📊 Clustering**: KMeans pour organisation des questions
-- **🔒 Sécurité**: Gestion des tokens et variables d'environnement
-- **✅ Tests**: Suite complète de tests unitaires
-- **🚀 API FastAPI**: Interface REST documentée
+### Core Features
+- ** Ingestion de documents**: Support PDF avec découpage intelligent
+- ** Embeddings**: Modèles HuggingFace performants (384D)
+- ** Base vectorielle**: ChromaDB avec support HTTP et persistence
+- ** LLM**: Groq (llama-3.1-8b-instant) pour génération ultra-rapide
+- ** Clustering**: KMeans pour organisation des questions
+- ** Sécurité**: Gestion tokens, CORS, rate limiting
 
-## 🏗️ Architecture
+### DevOps & Production
+- ** Containerisation**: Docker & Docker Compose
+- ** Kubernetes**: Déploiement scalable avec auto-scaling
+- ** CI/CD**: GitHub Actions pour tests et déploiement automatique
+
+### Developer Experience
+- **✅ Tests**: Suite complète (unitaires, intégration, E2E)
+- **📝 Documentation**: API interactive (Swagger/ReDoc)
+- **📦 Packaging**: Poetry pour gestion dépendances
+- **🌐 API REST**: FastAPI avec validation Pydantic
+
+## Architecture Globale
+
+
+```mermaid
+graph TB
+    subgraph "☁️ Kubernetes Cluster"
+        subgraph "🌐 Ingress Layer"
+            INGRESS[Ingress NGINX<br/>TLS Termination]
+        end
+        
+        subgraph "🚀 Application Layer"
+            API1[FastAPI Pod 1]
+            API2[FastAPI Pod 2]
+            API3[FastAPI Pod 3]
+        end
+        
+        subgraph "💾 Data Layer"
+            CHROMA1[ChromaDB Pod 1]
+            CHROMA2[ChromaDB Pod 2]
+        end
+        
+        subgraph "📊 Monitoring"
+            PROMETHEUS[Prometheus]
+            GRAFANA[Grafana]
+            ELK[ELK Stack]
+        end
+    end
+    
+    subgraph "🔄 CI/CD"
+        GH[GitHub Actions]
+        REGISTRY[Container Registry]
+    end
+    
+    subgraph "🌍 External"
+        HF[HuggingFace API]
+        GROQ[Groq API]
+    end
+    
+    INGRESS --> API1
+    INGRESS --> API2
+    INGRESS --> API3
+    
+    API1 --> CHROMA1
+    API2 --> CHROMA1
+    API3 --> CHROMA2
+    
+    API1 --> HF
+    API1 --> GROQ
+    
+    GH --> REGISTRY
+    REGISTRY --> API1
+    
+    API1 -.metrics.-> PROMETHEUS
+    PROMETHEUS --> GRAFANA
+    API1 -.logs.-> ELK
 ```
-┌─────────────────┐
-│  Documents PDF  │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────────────┐
-│  Ingestion & Chunking   │
-│  (LangChain)            │
-└────────┬────────────────┘
-         │
-         ▼
-┌─────────────────────────┐
-│  Embeddings Generation  │
-│  (HuggingFace)          │
-└────────┬────────────────┘
-         │
-         ▼
-┌─────────────────────────┐
-│  ChromaDB Vector Store  │
-│  (HTTP Client)          │
-└────────┬────────────────┘
-         │
-         ▼
-┌─────────────────────────┐
-│  RAG Chain              │
-│  (LangChain + Groq)     │
-└────────┬────────────────┘
-         │
-         ▼
-┌─────────────────────────┐
-│  FastAPI REST API       │
-└─────────────────────────┘
-```
 
-## Prérequis
 
-- Python 3.+
-- Docker (pour ChromaDB)
-- Compte HuggingFace (pour les embeddings)
-- Compte Groq (pour le LLM)
+##  Prérequis
 
-## 🚀 Installation
+### Développement Local
+- Python 3.12+
+- Docker & Docker Compose
+- Git
+
+### Production
+- Kubernetes cluster (1.21+)
+- kubectl configuré
+- Helm 3.x
+- Container Registry (Docker Hub, GCR, ECR, etc.)
+
+### Comptes & API Keys
+- [HuggingFace](https://huggingface.co/) - Pour embeddings
+- [Groq](https://groq.com/) - Pour LLM
+- [GitHub](https://github.com/) - Pour CI/CD
+
+##  Installation
 
 ### 1. Cloner le projet
 ```bash
-git clone https://github.com/votre-username/rag-it-support.git
-cd rag-it-support
+git clone https://github.com/khadija199904/Smartops-RAG-IT-Support.git
+cd Smartops-RAG-IT-Support
 ```
 
-### 2. Créer un environnement virtuel
+
+### 3. Configuration :environnement virtuel
 ```bash
+# Créer un environnement virtuel
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 # ou
 venv\Scripts\activate  # Windows
-```
 
-### 3. Installer les dépendances
-```bash
+# Installer les dépendances
 pip install -r requirements.txt
 ```
 
 ### 4. Lancer ChromaDB
 ```bash
 # Avec Docker
-docker run -d -p 8000:8000 chromadb/chroma
+docker run -d -p 8001:8000 chromadb/chroma
 
 # Ou avec Docker Compose
-docker-compose up -d chromadb
-```
-
-## ⚙️ Configuration
-
-### 1. Variables d'environnement
-
-Créer un fichier `.env` à la racine:
-```env
-# HuggingFace
-HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxx
-
-# Groq
-GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxx
-
-# ChromaDB
-CHROMA_HOST=localhost
-CHROMA_PORT=8000
-COLLECTION_NAME=it_support_docs
-
-# Modèle embeddings
-EMBEDDING_MODEL_NAME=sentence-transformers/all-MiniLM-L6-v2
-
-# Documents
-PDF_PATH=data/data_IT.pdf
-```
-
-### 2. Configuration avancée
-
-Éditer `api/core/config.py`:
-```python
-# Paramètres RAG
-TOP_K = 2  # Nombre de documents à récupérer
-MODEL_NAME = "llama-3.1-8b-instant"
-TEMPERATURE = 0
-
-# Paramètres chunking
-CHUNK_SIZE = 1000
-CHUNK_OVERLAP = 200
-```
-
-## 📚 Utilisation
-
-### Pipeline complet
-```bash
-# 1. Ingérer les documents
-python -m pipelineRAG.ingestion
-
-# 2. Créer les embeddings
-python -m pipelineRAG.vectorstore
-
-# 3. Tester une requête
-python -m pipelineRAG.query_service
-```
-
-### Utilisation programmatique
-```python
-from pipelineRAG.query_service import query_rag_service
-
-# Poser une question
-result = query_rag_service("Comment diagnostiquer un problème réseau?")
-
-print(f"Réponse: {result['result']}")
-print(f"Sources: {len(result['source_documents'])} documents")
-```
-
-### Lancer l'API
-```bash
-uvicorn api.main:app --reload --host 0.0.0.0 --port 8080
-```
-
-Accéder à la documentation: http://localhost:8080/docs
-
-## 📁 Structure du projet
-```
-rag-it-support/
-├── api/
-│   ├── core/
-│   │   └── config.py           # Configuration
-│   ├── routes/
-│   │   └── chat.py             # Routes API
-│   └── main.py                 # Point d'entrée FastAPI
-├── pipelineRAG/
-│   ├── ingestion.py            # Chargement documents
-│   ├── vectorstore.py          # Gestion ChromaDB
-│   ├── retrieval.py            # Chaîne RAG
-│   └── query_service.py        # Service de requêtes
-├── scripts/
-│   ├── train_kmeans_rag.py     # Clustering
-│   └── index_questions.py      # Indexation questions
-├── tests/
-│   ├── test_vectorstore.py
-│   ├── test_query_service.py
-│   └── conftest.py             # Fixtures pytest
-├── data/
-│   ├── data_IT.pdf             # Documents source
-│   └── it_support_questions.txt
-├── .env                        # Variables d'environnement
-├── requirements.txt            # Dépendances
-├── docker-compose.yml          # Configuration Docker
-└── README.md
-```
-
-## 🧪 Tests
-
-### Lancer tous les tests
-```bash
-pytest tests/ -v
-```
-
-### Tests avec couverture
-```bash
-pytest tests/ --cov=pipelineRAG --cov-report=html --cov-report=term
-```
-
-### Tests spécifiques
-```bash
-# Vectorstore
-pytest tests/test_vectorstore.py -v
-
-# Query service
-pytest tests/test_query_service.py -v
-
-# Test spécifique
-pytest tests/test_vectorstore.py::test_create_and_store_embeddings_success -v
-```
-
-### Couverture de code
-
-Après les tests, ouvrir `htmlcov/index.html` dans un navigateur.
-
-## 🔌 API
-
-### Endpoints principaux
-
-#### POST /chat/query
-Poser une question au système RAG
-
-**Request:**
-```json
-{
-  "question": "Comment résoudre un problème réseau?",
-  "top_k": 2
-}
-```
-
-**Response:**
-```json
-{
-  "question": "Comment résoudre un problème réseau?",
-  "answer": "Pour résoudre un problème réseau...",
-  "sources": [
-    {
-      "content": "Extrait du document...",
-      "metadata": {"page": 45}
-    }
-  ]
-}
-```
-
-#### POST /documents/upload
-Uploader un nouveau document
-
-**Request:**
-```bash
-curl -X POST "http://localhost:8080/documents/upload" \
-  -F "file=@document.pdf"
-```
-
-#### GET /health
-Vérifier l'état du système
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "chromadb": "connected",
-  "model": "loaded"
-}
-```
-
-### Documentation interactive
-
-- Swagger UI: http://localhost:8080/docs
-- ReDoc: http://localhost:8080/redoc
-
-## 🐳 Déploiement
-
-### Avec Docker Compose
-```bash
 docker-compose up -d
 ```
 
-`docker-compose.yml`:
-```yaml
-version: '3.8'
+##  Configuration
 
-services:
-  chromadb:
-    image: chromadb/chroma:latest
-    ports:
-      - "8000:8000"
-    volumes:
-      - chroma_data:/chroma/chroma
-    environment:
-      - IS_PERSISTENT=TRUE
+### 1. Variables d'environnement
 
-  api:
-    build: .
-    ports:
-      - "8080:8080"
-    depends_on:
-      - chromadb
-    env_file:
-      - .env
-    environment:
-      - CHROMA_HOST=chromadb
-      - CHROMA_PORT=8000
+1. Copier le fichier d’exemple :
 
-volumes:
-  chroma_data:
-```
-
-### Dockerfile
-```dockerfile
-FROM python:3.10-slim
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8080"]
-```
-
-## 🔧 Dépannage
-
-### ChromaDB ne se connecte pas
 ```bash
-# Vérifier que ChromaDB tourne
-docker ps | grep chroma
-
-# Vérifier les logs
-docker logs <container_id>
-
-# Tester la connexion
-curl http://localhost:8000/api/v1/heartbeat
+cp .env.example .env
 ```
 
-### Erreur de token HuggingFace
+
+
+### Lancer l'API
 ```bash
-# Vérifier le token
-echo $HF_TOKEN
+# Développement avec hot-reload
+uvicorn api.main:app --reload --host 0.0.0.0 --port 8080
 
-# Se connecter à HuggingFace
-huggingface-cli login
+# Production avec Gunicorn
+gunicorn api.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
 ```
 
-### Problèmes de mémoire
-```python
-# Réduire la taille des chunks
-CHUNK_SIZE = 500
-CHUNK_OVERLAP = 100
+Documentation interactive: http://localhost:8080/docs
 
-# Réduire le nombre de documents récupérés
-TOP_K = 1
-```
+##  CI/CD
 
-### Erreur CUDA
-```python
-# Forcer l'utilisation du CPU
-model_kwargs = {'device': 'cpu'}
-```
+### GitHub Actions Workflows
 
-## 📊 Performances
+#### 1. Workflow CI -CD (Tests & Build)
 
-### Métriques typiques
+`.github/workflows/test.yml`
 
-- **Ingestion**: ~10 pages/seconde
-- **Embedding**: ~50 chunks/seconde
-- **Query**: ~2-5 secondes (selon la complexité)
-- **Taille index**: ~10MB pour 100 documents
 
-### Optimisations
-```python
-# Batch processing pour embeddings
-embeddings.embed_documents(chunks, batch_size=32)
 
-# Cache des embeddings
-from functools import lru_cache
 
-@lru_cache(maxsize=1000)
-def cached_embed_query(text):
-    return embeddings.embed_query(text)
-```
+##  Déploiement
 
-## 🛠️ Scripts utiles
 
-### Indexer les 100 questions
+### Kubernetes (Production)
+
+#### Déploiement complet
 ```bash
-python scripts/index_questions.py
+# 1. Créer le namespace
+kubectl create namespace rag-it-support
+
+# 2. Configurer les secrets
+kubectl create secret generic rag-secrets \
+  --from-literal=HF_TOKEN=$HF_TOKEN \
+  --from-literal=GROQ_API_KEY=$GROQ_API_KEY \
+  -n rag-it-support
+
+# 3. Déployer avec Helm
+helm install rag-it-support ./helm \
+  --namespace rag-it-support \
+  --values helm/values-prod.yaml
+
+# 4. Vérifier le déploiement
+kubectl get pods -n rag-it-support
+kubectl get svc -n rag-it-support
+kubectl get ingress -n rag-it-support
 ```
 
-### Clustering KMeans
+
+##  Tests
+
+
+### Lancer les Tests
 ```bash
-python scripts/train_kmeans_rag.py
-```
+# Tous les tests
+pytest Tests/ -v
 
-### Nettoyer ChromaDB
-```bash
-python -c "import chromadb; client = chromadb.HttpClient(host='localhost', port=8000); client.delete_collection('it_support_docs')"
-```
 
-## 🤝 Contribution
-
-1. Fork le projet
-2. Créer une branche (`git checkout -b feature/AmazingFeature`)
-3. Commit les changements (`git commit -m 'Add AmazingFeature'`)
-4. Push vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrir une Pull Request
-
-### Guidelines
-
-- Écrire des tests pour les nouvelles fonctionnalités
-- Suivre PEP 8 pour le style Python
-- Documenter les fonctions avec docstrings
-- Mettre à jour le README si nécessaire
-
-## 📝 Changelog
-
-### Version 1.0.0 (2024-01-XX)
-- ✨ Version initiale
-- 🔍 Support PDF
-- 🧠 Embeddings HuggingFace
-- 💾 ChromaDB HTTP
-- 🤖 Groq LLM
-- ✅ Tests unitaires
-
-## 📄 Licence
-
-MIT License - voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
-## 👥 Auteurs
-
-- **Votre Nom** - *Développement initial* - [VotreGitHub](https://github.com/votre-username)
 
 ## 🙏 Remerciements
 
-- [LangChain](https://python.langchain.com/) - Framework RAG
-- [ChromaDB](https://www.trychroma.com/) - Base vectorielle
-- [HuggingFace](https://huggingface.co/) - Modèles embeddings
-- [Groq](https://groq.com/) - LLM ultra-rapide
-- [FastAPI](https://fastapi.tiangolo.com/) - Framework API
+- [LangChain](https://python.langchain.com/)
+- [ChromaDB](https://www.trychroma.com/)
+- [HuggingFace](https://huggingface.co/)
+- [Groq](https://groq.com/)
+- [FastAPI](https://fastapi.tiangolo.com/)
 
-## 📞 Support
-
-- 📧 Email: support@example.com
-- 💬 Discord: [Lien Discord](https://discord.gg/xxxxx)
-- 🐛 Issues: [GitHub Issues](https://github.com/votre-username/rag-it-support/issues)
-
-## 🔗 Liens utiles
-
-- [Documentation LangChain](https://python.langchain.com/docs/get_started/introduction)
-- [Guide ChromaDB](https://docs.trychroma.com/)
-- [API Groq](https://console.groq.com/docs)
-- [HuggingFace Models](https://huggingface.co/models)
-
----
-
-⭐ Si ce projet vous aide, n'hésitez pas à mettre une étoile!
