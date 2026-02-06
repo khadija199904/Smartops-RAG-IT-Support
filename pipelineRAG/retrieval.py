@@ -49,14 +49,14 @@ def build_rag_chain():
     
     prompt = ChatPromptTemplate.from_messages([
     ("system", system_prompt),
-     ("human", "{question}"),
+     ("human", "{query}"), 
        ])
     qa_chain = RetrievalQA.from_chain_type(
-    llm=llm,
+     llm=llm,
     chain_type="stuff",
     retriever=retriever,
     return_source_documents=True,
-    chain_type_kwargs={"prompt": prompt }   
+    chain_type_kwargs={"prompt": prompt}  
          )
     return qa_chain
 
