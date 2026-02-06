@@ -1,1 +1,7 @@
 .env 
+.github/workflows/test.yml
+.pytest_cache
+.venv
+__pycache__
+Tests/
+.git
