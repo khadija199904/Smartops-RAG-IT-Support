@@ -236,7 +236,7 @@ pytest Tests/ -v
 
 
 
-## 🙏 Remerciements
+##  Stack
 
 - [LangChain](https://python.langchain.com/)
 - [ChromaDB](https://www.trychroma.com/)
