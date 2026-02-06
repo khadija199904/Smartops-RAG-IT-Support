@@ -58,8 +58,9 @@ def create_and_store_embeddings(chunks):
 
 def load_vector_db():
     """Charge la base de données vectorielle existante."""
-    
+
     embeddings = get_embedding_model()
+    print("retrieving depuis chormadb")
     persistent_client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
     
     return Chroma(
