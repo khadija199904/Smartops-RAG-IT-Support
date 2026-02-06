@@ -57,7 +57,6 @@ jobs:
         with:
           context: .
           push: true
-          # On crée deux tags : 'latest' et le nom de la branche
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/rag-pipeline:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/rag-pipeline:${{ github.ref_name }}
