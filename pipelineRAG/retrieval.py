@@ -10,7 +10,7 @@ from langchain_classic.chains.retrieval_qa.base import RetrievalQA
 
 MODEL_NAME = "llama-3.1-8b-instant"
 TEMPERATURE = 0
-TOP_K = 2
+TOP_K = 8
 
 system_prompt = (
     "Tu es un assistant technique expert en IT. "

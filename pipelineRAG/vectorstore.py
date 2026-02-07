@@ -85,16 +85,7 @@ def load_vector_db():
 
 
 if __name__ == "__main__":
-#     import os
-#     client = chromadb.HttpClient(
-#     host=os.getenv("CHROMA_HOST", "localhost"),
-#     port=int(os.getenv("CHROMA_PORT", 9000))
-# )
-#     collection_name = os.getenv("CHROMA_COLLECTION_NAME")
-#     collection = client.get_collection(name=collection_name)
 
-#     print(f"Nombre de documents dans la collection '{collection_name}': {collection.count()}")
-#     results = collection.get(where_document={"$contains": "VPN"})
 #     if results["documents"]:
 #        print("--- Contenu du document VPN ---")
 #        print(results["documents"][0])
