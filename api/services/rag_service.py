@@ -2,9 +2,10 @@ import mlflow
 import mlflow.langchain
 import time
 from pipelineRAG.retrieval import build_rag_chain, MODEL_NAME, TEMPERATURE, TOP_K, system_prompt
-from api.core.config import EMBEDDING_MODEL_NAME
+from api.core.config import EMBEDDING_MODEL_NAME ,MLFLOW_TRACKING_URI
 
-mlflow.set_tracking_uri("http://localhost:5000") 
+
+mlflow.set_tracking_uri(MLFLOW_TRACKING_URI) 
 mlflow.set_experiment("Smartops-RAG-IT-Support")
 
 _rag_chain = None
@@ -22,6 +23,7 @@ def get_chain():
 def query_rag_service(question_text):
     
     chain = get_chain()
+
     with mlflow.start_run():
         #  Log des Paramètres
         mlflow.log_params({
@@ -36,7 +38,9 @@ def query_rag_service(question_text):
         start_time = time.time()
         
         # Exécution de la chaîne
-        result = chain.invoke({"query": question_text})
+        result = chain.invoke({"query":  question_text})
+
+        
         
         latency = time.time() - start_time
 

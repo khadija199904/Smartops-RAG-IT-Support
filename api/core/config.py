@@ -24,12 +24,12 @@ COLLECTION_NAME = os.getenv("CHROMA_COLLECTION_NAME", "smartops_collection")
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-
+MLFLOW_TRACKING_URI =   os.getenv("MLFLOW_TRACKING_URI")
 
 if not DATABASE_URL :
     # Fetch variables
-     USER = os.getenv("POSTGRES_USER","airflow")
-     PASSWORD = os.getenv("POSTGRES_PASSWORD","airflow")
+     USER = os.getenv("POSTGRES_USER")
+     PASSWORD = os.getenv("POSTGRES_PASSWORD")
      HOST = os.getenv("POSTGRES_HOST")
      PORT = os.getenv("POSTGRES_PORT")
      DBNAME = os.getenv("POSTGRES_DB")

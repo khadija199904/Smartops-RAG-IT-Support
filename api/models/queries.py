@@ -7,7 +7,7 @@ class Query(Base):
 
   id = Column(Integer,primary_key=True)
   user_id = Column(Integer,ForeignKey('users.id'))
-  question = Column(String((500),nullable=False))
+  question = Column(String(500),nullable=False)
   answer = Column(String(500))
   cluster = Column(Integer)
   latency_ms = Column(Integer)
