@@ -11,21 +11,29 @@ def clustering_query (query_text: str):
   q_X = np.array(q_vector)
   cluster_label = kmeans.predict(q_X)[0].item()
 
-#   cluster_label = kmeans.predict(q_vector)[0]
 
   return cluster_label
 
 
 
+
+
+
+
+
+
+
+
 if __name__ == "__main__":
     test_questions = [
-        "Le wifi ne fonctionne pas dans la salle de réunion",      # Sujet : Réseau
-        "Je n'arrive pas à réinitialiser mon mot de passe",       # Sujet : Sécurité/Accès
-        "Mon écran reste noir quand j'allume l'ordinateur",       # Sujet : Matériel
-        "Pouvez-vous m'installer le logiciel Photoshop ?",        # Sujet : Logiciel
-        "L'imprimante fait un bruit bizarre et ne sort rien",      # Sujet : Périphérique
-        "Comment configurer mon VPN pour le télétravail ?",       # Sujet : Réseau (devrait être Cluster 0)
-        "J'ai renversé du café sur mon clavier",                  # Sujet : Matériel
+        "Comment identifier la cause racine d’un problème informatique",
+        "Quelle est la différence entre first-line, second-line et third-line support ?",      
+        "Quelles sont les trois questions fondamentales de l’IT support ?",     
+        "Pourquoi ne faut-il jamais faire d’hypothèses lors d’un diagnostic IT",      
+        "Pouvez-vous m'installer le logiciel Photoshop ?",        
+        "L'imprimante fait un bruit bizarre et ne sort rien",      
+        "Comment configurer mon VPN pour le télétravail ?",       
+        "J'ai renversé du café sur mon clavier",                  
     ]
 
     print("\n--- Analyse des Sujets ---")
