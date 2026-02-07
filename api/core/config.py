@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 import os
-
+import chromadb
 
 # Load environment variables from .env
 load_dotenv()
@@ -18,7 +18,7 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 
 # CHROMA CONFIGURATION
 CHROMA_HOST = os.getenv("CHROMA_HOST", "localhost")
-CHROMA_PORT = os.getenv("CHROMA_PORT", "8001")
+CHROMA_PORT = os.getenv("CHROMA_PORT", "9000")
 COLLECTION_NAME = os.getenv("CHROMA_COLLECTION_NAME", "smartops_collection")
 
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -40,3 +40,15 @@ if not DATABASE_URL :
 
  # Configuration de JWT
 SECRET_KEY = os.getenv("SECRET_KEY")
+
+
+
+
+
+
+if __name__ == "__main__":
+  try:
+    client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT )
+    print(f"Connecté au serveur Chroma sur {CHROMA_HOST}:{CHROMA_PORT }")
+  except Exception as e:
+    print(f"Erreur de connexion : {e}")
