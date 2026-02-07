@@ -78,7 +78,8 @@ def build_rag_chain():
     return_source_documents=True,
     chain_type_kwargs={"prompt": prompt}   
          )
-    print("Clés attendues par la chaîne :", qa_chain.input_keys) 
+    
+    
     return qa_chain
 
 if __name__ == "__main__":

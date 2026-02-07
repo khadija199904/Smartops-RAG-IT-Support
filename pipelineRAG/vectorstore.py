@@ -31,11 +31,13 @@ def create_and_store_embeddings(chunks):
        
        persistent_client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
 
-       try:
-            persistent_client.delete_collection(name=COLLECTION_NAME)
-            print(f"Ancienne collection '{COLLECTION_NAME}' supprimée.")
-       except Exception:
-            pass
+       # delete a collection if exist
+
+    #    try:
+    #         persistent_client.delete_collection(name=COLLECTION_NAME)
+    #         print(f"Ancienne collection '{COLLECTION_NAME}' supprimée.")
+    #    except Exception:
+    #         pass
        
        vector_db = Chroma.from_documents(
             documents=chunks,
@@ -83,13 +85,23 @@ def load_vector_db():
 
 
 if __name__ == "__main__":
-    # # Test Simple
-    # model = get_embedding_model()
-    # texte = "Keep pushing forward, Khadija. Your workflow is spot on!"
-    # vecteur = model.embed_query(texte)
-    # print(len(vecteur))
-    # print(f"Premier élément : {vecteur[0]}")
+#     import os
+#     client = chromadb.HttpClient(
+#     host=os.getenv("CHROMA_HOST", "localhost"),
+#     port=int(os.getenv("CHROMA_PORT", 9000))
+# )
+#     collection_name = os.getenv("CHROMA_COLLECTION_NAME")
+#     collection = client.get_collection(name=collection_name)
+
+#     print(f"Nombre de documents dans la collection '{collection_name}': {collection.count()}")
+#     results = collection.get(where_document={"$contains": "VPN"})
+#     if results["documents"]:
+#        print("--- Contenu du document VPN ---")
+#        print(results["documents"][0])
+#     else:
+#        print("Aucun document trouvé.")
+   
     from pipelineRAG.ingestion import ingestion_preparation
-    #test fonctionnement complet
+    # #test fonctionnement complet
     chunks = ingestion_preparation()
     vecteur = create_and_store_embeddings(chunks)
