@@ -1,5 +1,3 @@
-
-
 services:
   db:
     image: postgres:16
@@ -9,21 +7,18 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d it_assistant_db"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d it_assistant_db" ]
       interval: 5s
       timeout: 5s
       retries: 5
   chroma:
-    image: chromadb/chroma:0.6.3 
-    container_name: smartops_chroma
+    image: chromadb/chroma:0.6.3
+    container_name: RagAssistant_chroma
     restart: always
-    command: >
-       uvicorn chromadb.app:app --host 0.0.0.0 --port 9000
-  
     environment:
       - IS_PERSISTENT=TRUE
       - PERSIST_DIRECTORY=/chroma/chroma
@@ -31,8 +26,7 @@ services:
     volumes:
       - chroma_data:/chroma/chroma
     ports:
-      - "9000:9000"
- 
+      - "9002:8000"
   mlflow:
     image: ghcr.io/mlflow/mlflow:latest
     container_name: mlflow_server
@@ -40,13 +34,13 @@ services:
       - "5000:5000"
     command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow.db --default-artifact-root /mlruns
     environment:
-    - MLFLOW_SERVER_ALLOWED_HOSTS=*
+      - MLFLOW_SERVER_ALLOWED_HOSTS=*
     volumes:
-    - ./mlflow_data:/mlruns
+      - ./mlflow_data:/mlruns
   backend:
     build:
       context: .
-    container_name: smartops_backend
+    container_name: RagAssistant_backend
     restart: always
     depends_on:
       - db
@@ -56,12 +50,12 @@ services:
     env_file:
       - .env
     environment:
-       - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-it_assistant_db}
-       - CHROMA_HOST=chroma
-       - CHROMA_PORT=9000
-       - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-it_assistant_db}
+      - CHROMA_HOST=chroma
+      - CHROMA_PORT=8000
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
     ports:
-      - "8000:8000"
+      - "8002:8000"
     volumes:
       - ./api:/app/api
       - ./pipelineRAG:/app/pipelineRAG
