@@ -10,6 +10,14 @@ class QueryBase(BaseModel):
 class QueryRequest(QueryBase):
      pass
 
+class QueryData(BaseModel):
+    user_id: int
+    question: str
+    answer: str
+    cluster: int      
+    latency_ms: float
+
+
 class QueryResponce(QueryBase):
      id : int
      latency_ms: int
