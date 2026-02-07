@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel 
+
 
 
 
@@ -15,9 +16,9 @@ class UserLogin(UserBase):
     pass 
 
 
-class User(UserBase):
+class UserOut(UserBase):
     id: int
     is_active: bool
-    password_hash : str 
+    
 
 
