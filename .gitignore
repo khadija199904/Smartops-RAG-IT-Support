@@ -5,3 +5,4 @@ __pycache__
 .pytest_cache
 *.pdf
 .pytest_cache
+mlflow.db

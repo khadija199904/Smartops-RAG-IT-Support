@@ -1,6 +1,5 @@
 
 
-
 services:
   db:
     image: postgres:16
@@ -19,34 +18,52 @@ services:
       timeout: 5s
       retries: 5
   chroma:
-    image: chromadb/chroma:latest
+    image: chromadb/chroma:0.6.3 
     container_name: smartops_chroma
     restart: always
+    command: >
+       uvicorn chromadb.app:app --host 0.0.0.0 --port 9000
+  
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma
+      - ANONYMIZED_TELEMETRY=FALSE
     volumes:
       - chroma_data:/chroma/chroma
     ports:
-      - "8001:8000"
-
+      - "9000:9000"
+ 
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: mlflow_server
+    ports:
+      - "5000:5000"
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow.db --default-artifact-root /mlruns
+    environment:
+    - MLFLOW_SERVER_ALLOWED_HOSTS=*
+    volumes:
+    - ./mlflow_data:/mlruns
   backend:
     build:
       context: .
     container_name: smartops_backend
     restart: always
     depends_on:
-      db:
-        condition: service_healthy
+      - db
+      - chroma
+      - mlflow
+
     env_file:
       - .env
     environment:
        - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-it_assistant_db}
        - CHROMA_HOST=chroma
-       - CHROMA_PORT=8000
+       - CHROMA_PORT=9000
+       - MLFLOW_TRACKING_URI=http://mlflow:5000
     ports:
       - "8000:8000"
     volumes:
       - ./api:/app/api
-      - ./data/chroma_db:/app/data/chroma_db
-      - ./pipelineRAG:/app/pipelineRAG
       - ./pipelineRAG:/app/pipelineRAG
       - ./ml:/app/ml
     working_dir: /app
