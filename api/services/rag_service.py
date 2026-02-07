@@ -1,12 +1,12 @@
 import mlflow
-import mlflow.langchain
 import time
 from pipelineRAG.retrieval import build_rag_chain, MODEL_NAME, TEMPERATURE, TOP_K, system_prompt
 from api.core.config import EMBEDDING_MODEL_NAME ,MLFLOW_TRACKING_URI
+from api.utils.mlflow_track import track_rag_inference
 
 
-mlflow.set_tracking_uri(MLFLOW_TRACKING_URI) 
-mlflow.set_experiment("Smartops-RAG-IT-Support")
+
+
 
 _rag_chain = None
 
@@ -24,50 +24,36 @@ def query_rag_service(question_text):
     
     chain = get_chain()
 
-    with mlflow.start_run():
-        #  Log des Paramètres
-        mlflow.log_params({
-            "model_name": MODEL_NAME,
-            "temperature": TEMPERATURE,
-            "top_k": TOP_K,
-            "embedding_model": EMBEDDING_MODEL_NAME,
-            "system_prompt": system_prompt
-        })
-
-        # Latence
+    with mlflow.start_run(run_name="rag_inference"):
+        
+        # Exécution de la requête
         start_time = time.time()
-        
-        # Exécution de la chaîne
         result = chain.invoke({"query":  question_text})
-
-        
-        
         latency = time.time() - start_time
-
-        #Métriques
-        mlflow.log_metric("latency", latency)
+        latency_ms = round((latency * 1000),2)
+        # Extraction des données
+        response_text = result["result"]
+        source_docs = result.get("source_documents", [])
         
-        #  Log des Inputs/Outputs (Traces)
-        mlflow.log_param("question", question_text)
-        mlflow.log_text(result["result"], "response.txt")
-        
-        # Log des sources (chunks utilisés)
-        sources = [doc.page_content for doc in result.get("source_documents", [])]
-        mlflow.log_text("\n---\n".join(sources), "context_chunks.txt")
-
-      
-        mlflow.langchain.log_model(
-            lc_model=chain,
-            artifact_path="rag_pipeline",
-            registered_model_name="Smartops-RAG-Model"
+        # Tracking MLflow (fonction du script)
+        run_id = track_rag_inference(
+            llm_model=MODEL_NAME,
+            temperature=TEMPERATURE,
+            top_k=TOP_K,
+            embedding_model=EMBEDDING_MODEL_NAME,
+            system_prompt=system_prompt,
+            user_question=question_text,
+            response_text=response_text,
+            source_docs=source_docs,
+            latency=latency
         )
+        
+        
+        return result,latency_ms
 
-        print(f"Réponse générée en {latency:.2f}s")
-        return result
-
-    return result
+    
 
 
 if __name__ == "__main__":
-  query = 'Comment configurer mon VPN pour le télétravail ?'
+  query = 'Quelle est la procédure pour un problème de connexion réseau ?'
   query_rag_service(query)
