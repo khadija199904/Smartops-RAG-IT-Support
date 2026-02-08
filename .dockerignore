@@ -5,3 +5,10 @@
 __pycache__
 Tests/
 .git
+.gitignore
+*.md
+.DS_Store
+k8s/
+.pytest_cache/
+*.log
+mlruns/
