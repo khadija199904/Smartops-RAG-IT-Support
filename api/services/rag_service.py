@@ -1,7 +1,7 @@
 import mlflow
 import time
 from pipelineRAG.retrieval import build_rag_chain, MODEL_NAME, TEMPERATURE, TOP_K, system_prompt
-from api.core.config import EMBEDDING_MODEL_NAME ,MLFLOW_TRACKING_URI
+from api.core.config import EMBEDDING_MODEL_NAME 
 from api.utils.mlflow_track import track_rag_inference
 
 
@@ -36,7 +36,7 @@ def query_rag_service(question_text):
         source_docs = result.get("source_documents", [])
         
         # Tracking MLflow (fonction du script)
-        run_id = track_rag_inference(
+        track_rag_inference(
             llm_model=MODEL_NAME,
             temperature=TEMPERATURE,
             top_k=TOP_K,
