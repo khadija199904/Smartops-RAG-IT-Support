@@ -11,7 +11,7 @@ def mock_rag_chain():
     mock_doc.page_content = "Test content"
     
     chain.invoke.return_value = {
-        "answer": "Réponse de test",
+        "result": "Réponse de test",
         "source_documents": [mock_doc]
     }
     return chain
