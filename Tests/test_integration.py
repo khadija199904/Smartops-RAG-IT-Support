@@ -4,11 +4,15 @@ from api.services.rag_service import query_rag_service
 
 @pytest.fixture
 def mock_rag_chain():
-    """Fixture chaîne RAG"""
+    """Fixture pour mock chaîne RAG"""
     chain = Mock()
+    mock_doc = Mock()
+    mock_doc.metadata = {"score": 0.85, "source": "test.txt"}
+    mock_doc.page_content = "Test content"
+    
     chain.invoke.return_value = {
-        "result": "Réponse standard",
-        "source_documents": [Mock()]
+        "answer": "Réponse de test",
+        "source_documents": [mock_doc]
     }
     return chain
 
