@@ -1,0 +1,33 @@
+# RAG 
+
+langchain
+langchain-community 
+langchain-core
+langchain-classic 
+pypdf
+langchain-text-splitters
+langchain-huggingface 
+langchain-chroma
+chromadb
+sentence-transformers
+langchain-groq
+
+
+# Fastapi
+psycopg2-binary
+sqlalchemy 
+fastapi 
+uvicorn 
+python-jose
+requests
+passlib[argon2]
+
+
+# ml
+
+
+scikit-learn
+mlflow
+
+pytest
+pytest-mock

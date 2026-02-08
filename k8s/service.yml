@@ -1,0 +1,15 @@
+# k8s/service.yaml
+# Définit COMMENT accéder à votre application
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rag-service
+spec:
+  type: NodePort
+  selector:
+    app: rag-api
+  ports:
+  - port: 8000
+    targetPort: 8000
+    nodePort: 30080  # Accessible sur localhost:30080

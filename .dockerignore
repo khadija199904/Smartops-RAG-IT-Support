@@ -1,0 +1,14 @@
+.env 
+.github/workflows/test.yml
+.pytest_cache
+.venv
+__pycache__
+Tests/
+.git
+.gitignore
+*.md
+.DS_Store
+k8s/
+.pytest_cache/
+*.log
+mlruns/

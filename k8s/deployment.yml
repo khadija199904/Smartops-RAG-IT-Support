@@ -1,0 +1,43 @@
+# k8s/deployment.yaml
+# Définit COMMENT votre application tourne
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rag-api
+spec:
+  replicas: 1  # 1 seul pod
+  selector:
+    matchLabels:
+      app: rag-api
+  template:
+    metadata:
+      labels:
+        app: rag-api
+    spec:
+      containers:
+      - name: rag-container
+        image: rag-api:v1
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        
+        # Variables d'environnement depuis ConfigMap
+        envFrom:
+        - configMapRef:
+            name: rag-config
+        
+        # Variables secrètes (on les ajoutera après)
+        env:
+        - name: OPENAI_API_KEY
+          value: "TEMPORAIRE"  # On va changer ça
+        - name: GROQ_API_KEY
+          value: "TEMPORAIRE"  # On va changer ça
+        
+        # Health check
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10

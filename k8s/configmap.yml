@@ -1,0 +1,21 @@
+# k8s/1-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rag-config
+  namespace: default
+data:
+  # MLflow
+  MLFLOW_TRACKING_URI: "http://host.docker.internal:5000"
+  
+  # Modèle
+  MODEL_NAME: "llama-3.1-8b-instant"
+  TEMPERATURE: "0"
+  TOP_K: "2"
+  
+  # Embedding
+  EMBEDDING_MODEL_NAME: "BAAI/bge-m3"
+  
+  # Environnement
+  ENV: "production"
+  LOG_LEVEL: "INFO"
