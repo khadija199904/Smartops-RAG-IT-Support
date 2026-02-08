@@ -12,7 +12,7 @@ TEMPERATURE = 0
 TOP_K = 8
 
 
-prompt_template = """Tu es un assistant technique expert en IT.
+system_prompt = """Tu es un assistant technique expert en IT.
 Utilise exclusivement le contexte fourni pour répondre à la question.
 Si la réponse n'est pas présente dans le contexte, dis exactement ceci :
 'Je ne trouve pas l'information dans les documents fournis.'
@@ -47,7 +47,7 @@ def build_rag_chain():
     llm = get_llm()
     
     prompt = PromptTemplate(
-        template=prompt_template,
+        template=system_prompt,
         input_variables=["context", "question"]
     )
     

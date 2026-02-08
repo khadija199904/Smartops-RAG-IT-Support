@@ -1,9 +1,7 @@
-
+import os
 import mlflow
 from api.core.config import MLFLOW_TRACKING_URI
-import os
 import tempfile
-
 
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 mlflow.set_experiment("Smartops-RAG-IT-Support")

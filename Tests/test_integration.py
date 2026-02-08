@@ -1,4 +1,3 @@
-# tests/test_fixtures_query_service.py
 import pytest
 from unittest.mock import Mock, patch
 from api.services.rag_service import query_rag_service
