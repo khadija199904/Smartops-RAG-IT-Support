@@ -23,18 +23,22 @@ def mock_question():
 
 def test_with_chain(mock_rag_chain):
     """Test avec fixture chaîne"""
-    with patch('api.services.rag_service.build_rag_chain', return_value=mock_rag_chain):
-        
+    with patch('api.services.rag_service.get_chain', return_value=mock_rag_chain):
         result = query_rag_service("Test?")
+                
+        result , latency_ms= query_rag_service("Test?")
         
         assert result["result"] == "Réponse standard"
+        assert latency_ms > 0
 
 def test_with_question(mock_rag_chain, mock_question):
     """Test avec fixture question"""
-    with patch('api.services.rag_service.build_rag_chain', return_value=mock_rag_chain):
+    with patch('api.services.rag_service.get_chain', return_value=mock_rag_chain):
         
         result = query_rag_service(mock_question)
-        
         mock_rag_chain.invoke.assert_called_once_with({"query": mock_question})
-        assert "result" in result
-        assert "source_documents" in result
+        
+        # Vérifier le résultat
+        response_text, source_docs, _ = result
+        assert response_text == "Réponse standard"
+        assert isinstance(source_docs, list)
