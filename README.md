@@ -1,5 +1,6 @@
 
-# RAG IT Support System
+
+#  RAG IT Support System
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![LangChain](https://img.shields.io/badge/LangChain-Framework-green)](https://python.langchain.com/)
 [![ChromaDB](https://img.shields.io/badge/ChromaDB-VectorDB-orange)](https://www.trychroma.com/)
@@ -7,209 +8,135 @@
 [![Groq](https://img.shields.io/badge/Groq-LLM_API-black)](https://groq.com/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688)](https://fastapi.tiangolo.com/)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-Orchestration-326CE5)](https://kubernetes.io/)
+[![Docker](https://img.shields.io/badge/Docker-Container-2496ED)](https://www.docker.com/)
 [![Git](https://img.shields.io/badge/Git-VersionControl-F05032)](https://git-scm.com/)
 
 
-Système de Retrieval-Augmented Generation (RAG) pour le support informatique, utilisant LangChain, ChromaDB et Groq LLM avec déploiement Kubernetes et CI/CD automatisé.
+Système de **Retrieval-Augmented Generation (RAG)** spécialisé pour le support informatique. Il utilise LangChain, ChromaDB et des LLM via API (Groq/Gemini) avec un déploiement robuste sur Kubernetes et une pipeline CI/CD automatisée.
 
 ##  Table des matières
-
 - [Aperçu](#aperçu)
 - [Fonctionnalités](#fonctionnalités)
+- [Structure du Projet](#structure-du-projet)
 - [Architecture](#architecture)
-- [Prérequis](#prérequis)
 - [Installation](#installation)
-- [Configuration](#configuration)
-- [Utilisation](#utilisation)
-- [CI/CD](#cicd)
-- [Déploiement](#déploiement)
-- [Supervision & Monitoring](#supervision--monitoring)
+- [API & Documentation](#api--documentation)
+- [CI/CD & Déploiement](#cicd--déploiement)
 - [Tests](#tests)
-- [API](#api)
-- [Performance](#performance)
-- [Dépannage](#dépannage)
-- [Contribution](#contribution)
-- [Licence](#licence)
 
 ##  Aperçu
+Ce projet permet d'automatiser les réponses du support IT en indexant des documents techniques (PDF, guides). L'utilisateur pose une question, le système retrouve les passages pertinents et génère une réponse précise en citant ses sources.
 
-Ce projet implémente un système RAG (Retrieval-Augmented Generation) spécialisé dans le support IT. Il permet de:
--  Indexer des documents IT support (PDF, etc.)
--  Répondre aux questions techniques basées sur ces documents
--  Fournir des sources pour chaque réponse
--  Déployer sur Kubernetes avec haute disponibilité
--  Monitorer les performances et la santé du système
--  CI/CD automatisé avec GitHub Actions
+## 🚀 Fonctionnalités
+- **Ingestion Intelligente** : Découpage et indexation de documents PDF.
+- **Vector Search** : Utilisation de ChromaDB pour une recherche sémantique rapide.
+- **LLM Multi-Provider** : Support pour Groq, Gemini ou HuggingFace.
+- **Tracking & Monitoring** : Intégration MLflow pour le suivi des performances.
+- **Infrastructure Moderne** : Containerisation Docker et orchestration Kubernetes (Scalabilité & Haute disponibilité).
 
-##  Fonctionnalités
+## 📂 Structure du Projet
+```text
+.
+├── .github/workflows/   # Pipeline CI/CD (Tests, Build, Deploy)
+├── Tests/               # Tests unitaires, d'intégration et E2E
+├── api/                 # Application FastAPI (Endpoints, Schémas)
+├── data/                # Stockage des documents et données locales
+├── k8s/                 # Manifestes Kubernetes (Deployment, Service, Ingress)
+├── ml/                  # Logique Machine Learning & Clustering
+├── pipelineRAG/         # Core logic du RAG (Embeddings, Retrieval, Chains)
+├── .dockerignore        # Fichiers exclus du build Docker
+├── .env.example         # Template des variables d'environnement
+├── .gitignore           # Fichiers exclus de Git
+├── Dockerfile           # Configuration de l'image Docker
+├── README.md            # Documentation principale
+├── docker-compose.yml   # Orchestration locale pour le développement
+└── requirements.txt     # Dépendances Python
+```
 
-### Core Features
-- ** Ingestion de documents**: Support PDF avec découpage intelligent
-- ** Embeddings**: Modèles HuggingFace performants (384D)
-- ** Base vectorielle**: ChromaDB avec support HTTP et persistence
-- ** LLM**: Groq (llama-3.1-8b-instant) pour génération ultra-rapide
-- ** Clustering**: KMeans pour organisation des questions
-- ** Sécurité**: Gestion tokens, CORS, rate limiting
-
-### DevOps & Production
-- ** Containerisation**: Docker & Docker Compose
-- ** Kubernetes**: Déploiement scalable avec auto-scaling
-- ** CI/CD**: GitHub Actions pour tests et déploiement automatique
-
-### Developer Experience
-- **✅ Tests**: Suite complète (unitaires, intégration, E2E)
-- **📝 Documentation**: API interactive (Swagger/ReDoc)
-- **📦 Packaging**: Poetry pour gestion dépendances
-- **🌐 API REST**: FastAPI avec validation Pydantic
-
-## Architecture Globale
-
-
+##  Architecture System
 ```mermaid
 graph TB
     subgraph "☁️ Kubernetes Cluster"
-        subgraph "🌐 Ingress Layer"
-            INGRESS[Ingress NGINX<br/>TLS Termination]
+        subgraph "🌐 Ingress"
+            INGRESS[Ingress NGINX<br/>TLS]
         end
         
-        subgraph "🚀 Application Layer"
-            API1[FastAPI Pod 1]
-            API2[FastAPI Pod 2]
-            API3[FastAPI Pod 3]
+        subgraph "🚀 Application (Single Pod)"
+            API[FastAPI Pod<br/>RAG + MLflow Client]
         end
         
-        subgraph "💾 Data Layer"
-            CHROMA1[ChromaDB Pod 1]
-            CHROMA2[ChromaDB Pod 2]
-        end
-        
-        subgraph "📊 Monitoring"
-            PROMETHEUS[Prometheus]
-            GRAFANA[Grafana]
-            ELK[ELK Stack]
+        subgraph "💾 Data Services"
+            CHROMA[ChromaDB]
+            POSTGRES[(PostgreSQL)]
         end
     end
-    
+
     subgraph "🔄 CI/CD"
         GH[GitHub Actions]
         REGISTRY[Container Registry]
     end
-    
-    subgraph "🌍 External"
-        HF[HuggingFace API]
-        GROQ[Groq API]
+
+    subgraph "🌍 External Services"
+        HF[HuggingFace Embeddings]
+        LLM[Gemini / HuggingFace LLM]
+        MLFLOW[MLflow Tracking Server]
     end
-    
-    INGRESS --> API1
-    INGRESS --> API2
-    INGRESS --> API3
-    
-    API1 --> CHROMA1
-    API2 --> CHROMA1
-    API3 --> CHROMA2
-    
-    API1 --> HF
-    API1 --> GROQ
-    
+
+    INGRESS --> API
+
+    API --> CHROMA
+    API --> POSTGRES
+    API --> HF
+    API --> LLM
+    API --> MLFLOW
+
     GH --> REGISTRY
-    REGISTRY --> API1
-    
-    
+    REGISTRY --> API
 ```
 
+## 🛠️ Installation
 
-##  Prérequis
-
-### Développement Local
-- Python 3.12+
-- Docker & Docker Compose
-- Git
-- WSL(Windows)
-
-
-
-### Comptes & API Keys
-- [HuggingFace](https://huggingface.co/) - Pour embeddings
-- [Groq](https://groq.com/) - Pour LLM
-- [GitHub](https://github.com/) - Pour CI/CD
-
-##  Installation
-
-### 1. Cloner le projet
+### 1. Cloner le dépôt
 ```bash
 git clone https://github.com/khadija199904/Smartops-RAG-IT-Support.git
 cd Smartops-RAG-IT-Support
 ```
 
-
-### 3. Configuration :environnement virtuel
+### 2. Configuration de l'environnement
 ```bash
-# Créer un environnement virtuel
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
-# ou
-venv\Scripts\activate  # Windows (WSL)
+# ou venv\Scripts\activate pour Windows
 
-# Installer les dépendances
 pip install -r requirements.txt
+cp .env.example .env # Remplissez vos clés API (GROQ, HF, etc.)
 ```
 
-### 4. Lancer ChromaDB
+### 3. Lancer avec Docker Compose
 ```bash
-# Avec Docker
-docker run -d -p 8002:8000 chroma/chroma
-
-# Ou avec Docker Compose
-docker-compose up -d
+docker-compose up -d --build
 ```
 
-##  Configuration
+##  API & Documentation
 
-### 1. Variables d'environnement
+Une fois l'application démarrée, l'API est accessible sur le port `8080`. Vous pouvez tester les fonctionnalités via l'interface Swagger UI.
 
-1. Copier le fichier d’exemple :
+### Interface Swagger (Query Endpoint)
+![Swagger UI Query](assests/query.png)
 
-```bash
-cp .env.example .env
-```
+- **Documentation Interactive** : [http://localhost:8080/docs](http://localhost:8080/docs)
+- **Point de terminaison Query** : `POST /query` pour poser une question au système.
 
-
-
-### Lancer l'API
-```bash
-# Développement avec hot-reload
-uvicorn api.main:app --reload --host 0.0.0.0 --port 8080
-
-
-
-Documentation interactive: http://localhost:8000/docs
-
-##  CI/CD
-
-### GitHub Actions Workflows
-
-#### 1. Workflow CI -CD (Tests & Build)
-
-`.github/workflows/test.yml`
-
-
-
+## CI/CD & Déploiement
+Le projet utilise **GitHub Actions** pour :
+1. **Linting & Tests** : Vérification automatique du code à chaque push.
+2. **Build & Push** : Création de l'image Docker et envoi vers le registre.
+3. **Deployment** : Mise à jour automatique du cluster Kubernetes.
 
 ##  Tests
-
-
-### Lancer les Tests
+Pour garantir la stabilité du système, lancez la suite de tests avec `pytest` :
 ```bash
-# Tous les tests
 pytest Tests/ -v
+```
 
-
-
-##  Stack
-
-- [LangChain](https://python.langchain.com/)
-- [ChromaDB](https://www.trychroma.com/)
-- [HuggingFace](https://huggingface.co/)
-- [Groq](https://groq.com/)
-- [FastAPI](https://fastapi.tiangolo.com/)
-
+---
