@@ -1,10 +1,14 @@
 
 # RAG IT Support System
-
-[![Build Status](https://github.com/votre-username/rag-it-support/workflows/CI/badge.svg)](https://github.com/votre-username/rag-it-support/actions)
-[![Coverage](https://codecov.io/gh/votre-username/rag-it-support/branch/main/graph/badge.svg)](https://codecov.io/gh/votre-username/rag-it-support)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![LangChain](https://img.shields.io/badge/LangChain-Framework-green)](https://python.langchain.com/)
+[![ChromaDB](https://img.shields.io/badge/ChromaDB-VectorDB-orange)](https://www.trychroma.com/)
+[![HuggingFace](https://img.shields.io/badge/HuggingFace-Models-yellow)](https://huggingface.co/)
+[![Groq](https://img.shields.io/badge/Groq-LLM_API-black)](https://groq.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688)](https://fastapi.tiangolo.com/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-Orchestration-326CE5)](https://kubernetes.io/)
+[![Git](https://img.shields.io/badge/Git-VersionControl-F05032)](https://git-scm.com/)
+
 
 Système de Retrieval-Augmented Generation (RAG) pour le support informatique, utilisant LangChain, ChromaDB et Groq LLM avec déploiement Kubernetes et CI/CD automatisé.
 
@@ -110,9 +114,7 @@ graph TB
     GH --> REGISTRY
     REGISTRY --> API1
     
-    API1 -.metrics.-> PROMETHEUS
-    PROMETHEUS --> GRAFANA
-    API1 -.logs.-> ELK
+    
 ```
 
 
@@ -122,12 +124,9 @@ graph TB
 - Python 3.12+
 - Docker & Docker Compose
 - Git
+- WSL(Windows)
 
-### Production
-- Kubernetes cluster (1.21+)
-- kubectl configuré
-- Helm 3.x
-- Container Registry (Docker Hub, GCR, ECR, etc.)
+
 
 ### Comptes & API Keys
 - [HuggingFace](https://huggingface.co/) - Pour embeddings
@@ -149,7 +148,7 @@ cd Smartops-RAG-IT-Support
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 # ou
-venv\Scripts\activate  # Windows
+venv\Scripts\activate  # Windows (WSL)
 
 # Installer les dépendances
 pip install -r requirements.txt
@@ -158,7 +157,7 @@ pip install -r requirements.txt
 ### 4. Lancer ChromaDB
 ```bash
 # Avec Docker
-docker run -d -p 8001:8000 chromadb/chroma
+docker run -d -p 8002:8000 chroma/chroma
 
 # Ou avec Docker Compose
 docker-compose up -d
@@ -181,11 +180,9 @@ cp .env.example .env
 # Développement avec hot-reload
 uvicorn api.main:app --reload --host 0.0.0.0 --port 8080
 
-# Production avec Gunicorn
-gunicorn api.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
-```
 
-Documentation interactive: http://localhost:8080/docs
+
+Documentation interactive: http://localhost:8000/docs
 
 ##  CI/CD
 
@@ -196,34 +193,6 @@ Documentation interactive: http://localhost:8080/docs
 `.github/workflows/test.yml`
 
 
-
-
-##  Déploiement
-
-
-### Kubernetes (Production)
-
-#### Déploiement complet
-```bash
-# 1. Créer le namespace
-kubectl create namespace rag-it-support
-
-# 2. Configurer les secrets
-kubectl create secret generic rag-secrets \
-  --from-literal=HF_TOKEN=$HF_TOKEN \
-  --from-literal=GROQ_API_KEY=$GROQ_API_KEY \
-  -n rag-it-support
-
-# 3. Déployer avec Helm
-helm install rag-it-support ./helm \
-  --namespace rag-it-support \
-  --values helm/values-prod.yaml
-
-# 4. Vérifier le déploiement
-kubectl get pods -n rag-it-support
-kubectl get svc -n rag-it-support
-kubectl get ingress -n rag-it-support
-```
 
 
 ##  Tests
