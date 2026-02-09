@@ -122,7 +122,7 @@ docker-compose up -d --build
 Une fois l'application démarrée, l'API est accessible sur le port `8080`. Vous pouvez tester les fonctionnalités via l'interface Swagger UI.
 
 ### Interface Swagger (Query Endpoint)
-![Swagger UI Query](assests/query.png)
+![Swagger UI Query](/image/query.png)
 
 - **Documentation Interactive** : [http://localhost:8080/docs](http://localhost:8080/docs)
 - **Point de terminaison Query** : `POST /query` pour poser une question au système.
