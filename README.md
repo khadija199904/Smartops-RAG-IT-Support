@@ -1,10 +1,14 @@
 
 # RAG IT Support System
-
-[![Build Status](https://github.com/votre-username/rag-it-support/workflows/CI/badge.svg)](https://github.com/votre-username/rag-it-support/actions)
-[![Coverage](https://codecov.io/gh/votre-username/rag-it-support/branch/main/graph/badge.svg)](https://codecov.io/gh/votre-username/rag-it-support)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![LangChain](https://img.shields.io/badge/LangChain-Framework-green)](https://python.langchain.com/)
+[![ChromaDB](https://img.shields.io/badge/ChromaDB-VectorDB-orange)](https://www.trychroma.com/)
+[![HuggingFace](https://img.shields.io/badge/HuggingFace-Models-yellow)](https://huggingface.co/)
+[![Groq](https://img.shields.io/badge/Groq-LLM_API-black)](https://groq.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688)](https://fastapi.tiangolo.com/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-Orchestration-326CE5)](https://kubernetes.io/)
+[![Git](https://img.shields.io/badge/Git-VersionControl-F05032)](https://git-scm.com/)
+
 
 Système de Retrieval-Augmented Generation (RAG) pour le support informatique, utilisant LangChain, ChromaDB et Groq LLM avec déploiement Kubernetes et CI/CD automatisé.
 
