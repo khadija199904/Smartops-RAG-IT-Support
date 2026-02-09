@@ -110,9 +110,7 @@ graph TB
     GH --> REGISTRY
     REGISTRY --> API1
     
-    API1 -.metrics.-> PROMETHEUS
-    PROMETHEUS --> GRAFANA
-    API1 -.logs.-> ELK
+    
 ```
 
 
@@ -122,12 +120,9 @@ graph TB
 - Python 3.12+
 - Docker & Docker Compose
 - Git
+- WSL(Windows)
 
-### Production
-- Kubernetes cluster (1.21+)
-- kubectl configuré
-- Helm 3.x
-- Container Registry (Docker Hub, GCR, ECR, etc.)
+
 
 ### Comptes & API Keys
 - [HuggingFace](https://huggingface.co/) - Pour embeddings
@@ -149,7 +144,7 @@ cd Smartops-RAG-IT-Support
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 # ou
-venv\Scripts\activate  # Windows
+venv\Scripts\activate  # Windows (WSL)
 
 # Installer les dépendances
 pip install -r requirements.txt
@@ -158,7 +153,7 @@ pip install -r requirements.txt
 ### 4. Lancer ChromaDB
 ```bash
 # Avec Docker
-docker run -d -p 8001:8000 chromadb/chroma
+docker run -d -p 8002:8000 chroma/chroma
 
 # Ou avec Docker Compose
 docker-compose up -d
@@ -181,11 +176,9 @@ cp .env.example .env
 # Développement avec hot-reload
 uvicorn api.main:app --reload --host 0.0.0.0 --port 8080
 
-# Production avec Gunicorn
-gunicorn api.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
-```
 
-Documentation interactive: http://localhost:8080/docs
+
+Documentation interactive: http://localhost:8000/docs
 
 ##  CI/CD
 
@@ -196,34 +189,6 @@ Documentation interactive: http://localhost:8080/docs
 `.github/workflows/test.yml`
 
 
-
-
-##  Déploiement
-
-
-### Kubernetes (Production)
-
-#### Déploiement complet
-```bash
-# 1. Créer le namespace
-kubectl create namespace rag-it-support
-
-# 2. Configurer les secrets
-kubectl create secret generic rag-secrets \
-  --from-literal=HF_TOKEN=$HF_TOKEN \
-  --from-literal=GROQ_API_KEY=$GROQ_API_KEY \
-  -n rag-it-support
-
-# 3. Déployer avec Helm
-helm install rag-it-support ./helm \
-  --namespace rag-it-support \
-  --values helm/values-prod.yaml
-
-# 4. Vérifier le déploiement
-kubectl get pods -n rag-it-support
-kubectl get svc -n rag-it-support
-kubectl get ingress -n rag-it-support
-```
 
 
 ##  Tests
